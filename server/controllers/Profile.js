@@ -56,6 +56,7 @@ exports.uploadProfileImage = async (req, res) => {
 
     return res.status(200).json({
       success: true,
+      data: newProfileData,
       message: "Profile image uploaded successfully",
     });
   } catch (error) {
@@ -83,16 +84,9 @@ exports.getAllProfileImage = async (req, res) => {
     userProfilesData.password = undefined;
     console.log("userProfilesData", userProfilesData);
 
-    // let ProfileData = [];
-    // userProfilesData?.userProfiles.map((image) => {
-    //   let imagePath = path.join(__dirname, `/public/${image.profileImage}`);
-    //   console.log("path", imagePath);
-    //   ProfileData.push({
-    //     image: imagePath,
-    //     profileUniqueId: image.profileUniqueId,
-    //   });
-    // });
-
+    // headers: {
+    //   'Content-Disposition': 'inline'
+    // }
     return res.status(200).json({
       success: true,
       data: userProfilesData.userProfiles,

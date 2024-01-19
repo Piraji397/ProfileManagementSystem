@@ -1,38 +1,54 @@
-import React, { useEffect, useState } from "react";
-import { format } from "date-fns";
+import React, { useEffect, useRef, useState } from "react";
 import { useDispatch, useSelector } from "react-redux";
 import { useNavigate } from "react-router-dom";
+import { setProfileImages, setUser } from "../../utils/slices/profileSlice";
 import { FiUpload } from "react-icons/fi";
+import { MdDelete } from "react-icons/md";
 import IconBtn from "../common/IconBtn";
 import {
   uploadProfileImage,
   getAllImages,
+  deleteImage,
 } from "../../services/operations/profileAPI";
+
+const BASE_URL = "http://localhost:4000/uploads/";
 
 const MyProfile = () => {
   const { token } = useSelector((state) => state.auth);
-  const { user } = useSelector((state) => state.profile);
+  const { user, profileImages } = useSelector((state) => state.profile);
   const navigate = useNavigate();
   const dispatch = useDispatch();
   const [profileImage, setProfileImage] = useState("");
-  const [allImages, setAllImages] = useState([]);
+  const inputFile = useRef(null);
 
   const handleOnSubmit = (e) => {
     e.preventDefault();
-    console.log("profileImage", profileImage);
-    dispatch(uploadProfileImage(profileImage, token, navigate));
+    // console.log("profileImage", profileImage);
+    dispatch(
+      uploadProfileImage(profileImage, token, user, profileImages, navigate)
+    );
     setProfileImage("");
+    inputFile.current.value = "";
+    getData();
   };
 
   const handleOnChange = (e) => {
-    console.log(e.target.files[0]);
+    // console.log(e.target.files[0]);
     setProfileImage(e.target.files[0]);
   };
 
+  const handleOnDelete = async (imageId) => {
+    dispatch(deleteImage(imageId, token, navigate));
+    // let filtered = profileImages.filter((image) => image._id !== imageId);
+    // dispatch(setProfileImages(filtered));
+
+    // console.log("data", data);
+  };
+
   const getData = async () => {
-    const data = await getAllImages(token);
-    console.log("data", data);
-    setAllImages(data);
+    dispatch(getAllImages(token, user));
+    // console.log("data", data);
+    // setAllImages(data);
   };
 
   useEffect(() => {
@@ -75,6 +91,7 @@ const MyProfile = () => {
                     <input
                       type="file"
                       required
+                      ref={inputFile}
                       onChange={handleOnChange}
                       placeholder="Enter profile image"
                       style={{
@@ -103,21 +120,28 @@ const MyProfile = () => {
                 All Profile Images
               </h2>
             </div>
-            {allImages.length > 0 ? (
-              <div>
-                {allImages.map((image) => (
-                  <div key={image._id}>
+            {profileImages && (
+              <div className="flex flex-wrap gap-x-6">
+                {profileImages.map((image) => (
+                  <div key={image._id} className="relative group">
                     {/* here images are not accessible */}
                     <img
-                      src={`http://localhost:4000/public/uploads/${image.profileImage}`}
-                      alt=""
+                      src={`${BASE_URL}${image.profileImage}`}
+                      alt={image.profileImage}
+                      className="pointer-events-none w-[250px] h-[250px] rounded-md object-contain group-hover:scale-105 duration-200"
                     />
-                    {/* <p>{image.profileUniqueId}</p> */}
+                    <p className="absolute left-0 bottom-0 text-[16px] text-slate-200 invisible group-hover:visible duration-200 ">
+                      Passcode - {image.profileUniqueId}
+                    </p>
+                    <div
+                      className="absolute right-0 bottom-[50px] p-2 bg-slate-400 z-[1000] rounded-full invisible group-hover:visible duration-200"
+                      onClick={() => handleOnDelete(image._id)}
+                    >
+                      <MdDelete className="text-[red] w-5 h-5 opacity-100" />
+                    </div>
                   </div>
                 ))}
               </div>
-            ) : (
-              <div></div>
             )}
           </div>
         </div>

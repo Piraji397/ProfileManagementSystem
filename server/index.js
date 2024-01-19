@@ -23,8 +23,8 @@ app.use(
 );
 // Function to serve all static files
 // inside public directory.
-app.use(express.static("public/uploads"));
-app.use("/uplaods", express.static("images"));
+app.use(express.static("public"));
+// app.use("/uplaods", express.static("images"));
 
 app.use("/api/v1/auth", userRoutes);
 app.use("/api/v1/profile", profileRoutes);

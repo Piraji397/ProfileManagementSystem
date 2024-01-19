@@ -1,11 +1,13 @@
-# Steps To Run the Project.
+## Steps To Run the Project.
 
-### Setup the environment variable first by renaming the both .env.sample to .env present in main directory as well as server directory.
+#### Setup the environment variable first by renaming the both .env.sample to .env present in main directory as well as server directory.
 
-### Run the npm install in both main and server directory.
+#### Also the mongoDB url in server/.env file
 
-### To Run the project. run the cmd 'npm run dev'
+#### Run the npm install in both main and server directory.
 
-## Backend work is done.
+#### To Run the project. run the cmd 'npm run dev'
 
-## Infrontend API Integration for login and signup and fetch all images api is done.
+### Backend work is done.
+
+### Only download feature is remaining in frontend.

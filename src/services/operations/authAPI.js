@@ -67,3 +67,20 @@ export function login(email, password, navigate) {
     }
   };
 }
+
+export function logout(navigate) {
+  return async (dispatch) => {
+    const toastId = toast.loading("Loading...");
+    dispatch(setLoading(true));
+    try {
+      localStorage.clear();
+      toast.success("Logout Successfully.");
+    } catch (error) {
+      toast.error("Logout failed.");
+    } finally {
+      toast.dismiss(toastId);
+      dispatch(setLoading(false));
+    }
+    navigate("/");
+  };
+}
